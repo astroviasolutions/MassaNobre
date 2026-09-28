@@ -1,0 +1,51 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { ShoppingBag } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+
+export function SiteHeader() {
+  const { count, open, hydrated } = useCart();
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-gold-700/40 bg-wood-900/95 backdrop-blur supports-[backdrop-filter]:bg-wood-900/85">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:h-20 sm:px-6">
+        <Link href="/" className="flex items-center gap-3">
+          <Image
+            src="/brand/emblema.jpg"
+            alt="Emblema Massa Nobre"
+            width={52}
+            height={52}
+            className="size-11 rounded-full ring-1 ring-gold-500/60 sm:size-13"
+            priority
+          />
+          <div className="leading-tight">
+            <span className="text-gold-foil block font-serif text-lg font-semibold tracking-wide sm:text-xl">Massa Nobre</span>
+            <span className="hidden text-[10px] tracking-[0.25em] text-gold-400/80 uppercase sm:block">Empadas & Empadinhas</span>
+          </div>
+        </Link>
+
+        <nav className="flex items-center gap-2 sm:gap-6">
+          <Link href="/#cardapio" className="hidden text-sm tracking-wide text-cream-200 transition hover:text-gold-300 sm:block">
+            Cardápio
+          </Link>
+          <button
+            type="button"
+            onClick={open}
+            className="relative inline-flex items-center gap-2 rounded-full border border-gold-500/50 px-4 py-2 text-sm font-medium text-gold-200 transition hover:border-gold-400 hover:bg-gold-500/10"
+            aria-label={`Abrir carrinho (${count} itens)`}
+          >
+            <ShoppingBag className="size-4" />
+            <span className="hidden sm:inline">Carrinho</span>
+            {hydrated && count > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-gold-400 text-[11px] font-bold text-wood-950">
+                {count}
+              </span>
+            )}
+          </button>
+        </nav>
+      </div>
+    </header>
+  );
+}
