@@ -1,7 +1,7 @@
 // Configurações da loja. No futuro estes valores virão da tabela `store_settings`
 // (editável pelo Painel de Gestão) — ver ARQUITETURA.md.
 export const STORE = {
-  name: "Massa Nobre",
+  name: "M&S Empadas e Empadões",
   tagline: "Artesanal | Empadas & Empadinhas",
   whatsapp: "5541999854161", // formato internacional, só dígitos
   whatsappDisplay: "(41) 99985-4161",

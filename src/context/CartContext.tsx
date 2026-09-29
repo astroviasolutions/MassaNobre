@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { STORE } from "@/lib/config";
-import { productById, type Product } from "@/lib/menu";
+import { PRODUCTS, type Product } from "@/lib/menu";
 import type { OrderLine } from "@/lib/order";
 
 type CartState = Record<string, number>; // productId -> quantidade (kg ou un.)
@@ -56,7 +56,7 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({ children, products = PRODUCTS }: { children: React.ReactNode; products?: Product[] }) {
   const [state, dispatch] = useReducer(reducer, {});
   const [hydrated, setHydrated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -84,9 +84,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const lines = useMemo<OrderLine[]>(
     () =>
       Object.entries(state)
-        .map(([id, quantity]) => ({ product: productById(id), quantity }))
+        .map(([id, quantity]) => ({ product: products.find((p) => p.id === id), quantity }))
         .filter((l): l is OrderLine => !!l.product && l.product.available),
-    [state],
+    [state, products],
   );
 
   const quantityOf = useCallback((id: string) => state[id] ?? 0, [state]);

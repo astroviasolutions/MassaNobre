@@ -14,14 +14,14 @@ export function SiteHeader() {
         <Link href="/" className="flex items-center gap-3">
           <Image
             src="/brand/emblema.jpg"
-            alt="Emblema Massa Nobre"
+            alt="Emblema M&S Empadas e Empadões"
             width={52}
             height={52}
             className="size-11 rounded-full ring-1 ring-gold-500/60 sm:size-13"
             priority
           />
           <div className="leading-tight">
-            <span className="text-gold-foil block font-serif text-lg font-semibold tracking-wide sm:text-xl">Massa Nobre</span>
+            <span className="text-gold-foil block font-serif text-lg font-semibold tracking-wide sm:text-xl">M&amp;S Empadas</span>
             <span className="hidden text-[10px] tracking-[0.25em] text-gold-400/80 uppercase sm:block">Empadas & Empadinhas</span>
           </div>
         </Link>

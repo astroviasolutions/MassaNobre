@@ -1,12 +1,16 @@
 import Image from "next/image";
 import { CalendarClock, Truck, Wheat } from "lucide-react";
-import { CATEGORIES, PRODUCTS } from "@/lib/menu";
+import { CATEGORIES } from "@/lib/menu";
+import { getProducts } from "@/lib/products";
 import { STORE } from "@/lib/config";
 import { ProductCard } from "@/components/ProductCard";
 import { Ornament } from "@/components/Ornament";
 import { FloatingCartBar } from "@/components/FloatingCartBar";
 
-export default function HomePage() {
+export const revalidate = 30;
+
+export default async function HomePage() {
+  const PRODUCTS = await getProducts();
   return (
     <>
       {/* Hero */}
@@ -17,13 +21,13 @@ export default function HomePage() {
         <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-16 pb-20 text-center sm:px-6 sm:pt-24 sm:pb-28">
           <Image
             src="/brand/emblema.jpg"
-            alt="Massa Nobre — Artesanal, Empadas & Empadinhas"
+            alt="M&S Empadas e Empadões — Artesanal"
             width={200}
             height={200}
             priority
             className="size-36 rounded-full shadow-[0_20px_60px_-10px_rgb(0_0_0/0.7)] ring-2 ring-gold-500/60 sm:size-48"
           />
-          <h1 className="text-gold-foil mt-8 font-serif text-4xl font-semibold tracking-wide sm:text-6xl">Massa Nobre</h1>
+          <h1 className="text-gold-foil mt-8 font-serif text-4xl font-semibold tracking-wide sm:text-6xl">M&amp;S Empadas<span className="block text-2xl sm:text-4xl">e Empadões</span></h1>
           <p className="mt-3 font-display text-xl text-cream-200 italic sm:text-2xl">
             Empadões e empadinhas feitos à mão, com massa que desmancha.
           </p>

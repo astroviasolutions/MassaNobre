@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 
-export const metadata: Metadata = { title: "Finalizar pedido · Massa Nobre" };
+export const metadata: Metadata = { title: "Finalizar pedido · M&S Empadas e Empadões" };
 
 export default function CheckoutPage() {
   return (

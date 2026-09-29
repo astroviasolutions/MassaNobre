@@ -86,3 +86,12 @@ body {
     animation: none !important;
   }
 }
+
+/* Comanda térmica: imprime só o cupom */
+@media print {
+  @page { size: 80mm auto; margin: 2mm; }
+  body { background: #fff !important; }
+  body * { visibility: hidden; }
+  .comanda, .comanda * { visibility: visible; }
+  .comanda { position: absolute; left: 0; top: 0; }
+}

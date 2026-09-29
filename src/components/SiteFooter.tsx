@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { STORE } from "@/lib/config";
 import { Ornament } from "./Ornament";
@@ -20,6 +21,7 @@ export function SiteFooter() {
         <p className="mt-6 text-xs text-wood-300">
           Encomendas com {STORE.leadTimeHours}h de antecedência · Feito à mão, com carinho.
         </p>
+        <Link href="/admin" className="mt-4 inline-block text-[11px] text-wood-500 hover:text-gold-300">Área administrativa</Link>
       </div>
     </footer>
   );

@@ -16,6 +16,7 @@ import {
   type OrderDraft,
   type PaymentMethod,
 } from "@/lib/order";
+import { supabase } from "@/lib/supabase";
 import { OrderSummary } from "./OrderSummary";
 import { Section, ChoiceCard, FieldError } from "./ui";
 
@@ -127,11 +128,31 @@ export function CheckoutForm() {
       lines,
     };
 
-    // Fase 2: antes de abrir o WhatsApp, gravar o pedido via POST /api/orders
-    // para ele aparecer na coluna "Novos" do Kanban (ver ARQUITETURA.md).
     const url = whatsappUrl(buildWhatsAppMessage(order));
     const win = window.open(url, "_blank");
     if (!win) window.location.href = url;
+
+    // Grava o pedido para aparecer em "Novos" no Painel. Preços são recalculados no banco.
+    supabase
+      ?.rpc("create_order", {
+        p: {
+          code: order.code,
+          name: order.customerName,
+          phone: order.customerPhone,
+          fulfillment,
+          cep,
+          street,
+          number,
+          complement,
+          neighborhood,
+          scheduled_for: `${date}T${time}:00-03:00`,
+          payment,
+          change_for: order.changeFor ?? null,
+          notes,
+          items: lines.map((l) => ({ slug: l.product.id, qty: l.quantity })),
+        },
+      })
+      .then(({ error }) => error && console.error("Falha ao gravar pedido", error));
 
     setSent({ code: order.code, url });
     clear();
