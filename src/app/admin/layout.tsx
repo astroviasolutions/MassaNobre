@@ -7,9 +7,11 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
 const TABS = [
-  { href: "/admin", label: "Pedidos" },
-  { href: "/admin/cardapio", label: "Cardápio e estoque" },
-  { href: "/admin/relatorios", label: "Relatórios" },
+  { href: "/admin", label: "Dashboard" },
+  { href: "/admin/pedidos", label: "Pedidos" },
+  { href: "/admin/cardapio", label: "Produtos" },
+  { href: "/admin/estoque", label: "Estoque" },
+  { href: "/admin/despesas", label: "Despesas" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -65,7 +67,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {t.label}
           </Link>
         ))}
-        <button onClick={() => supabase!.auth.signOut()} className="ml-auto text-sm text-wood-500 hover:text-red-600">
+        <Link href="/admin/pedidos/novo" className="btn-gold ml-auto px-4! py-2!">+ Novo pedido</Link>
+        <button onClick={() => supabase!.auth.signOut()} className=" text-sm text-wood-500 hover:text-red-600">
           Sair
         </button>
       </div>

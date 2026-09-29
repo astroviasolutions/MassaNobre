@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { LayoutDashboard, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 export function SiteHeader() {
@@ -29,6 +29,9 @@ export function SiteHeader() {
         <nav className="flex items-center gap-2 sm:gap-6">
           <Link href="/#cardapio" className="hidden text-sm tracking-wide text-cream-200 transition hover:text-gold-300 sm:block">
             Cardápio
+          </Link>
+          <Link href="/admin" className="inline-flex items-center gap-1.5 text-sm text-cream-200 transition hover:text-gold-300" aria-label="Área administrativa">
+            <LayoutDashboard className="size-4" /> <span className="hidden sm:inline">Admin</span>
           </Link>
           <button
             type="button"
