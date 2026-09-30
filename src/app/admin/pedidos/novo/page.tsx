@@ -75,7 +75,7 @@ export default function NovoPedido() {
               <span className="ml-2 text-wood-500">{formatBRL(p.price)}/{p.unit}</span>
               {!p.is_available && <span className="ml-2 text-xs text-red-600">desligado</span>}
             </span>
-            {p.is_available && <QuantityStepper quantity={qty[p.slug] ?? 0} unit={p.unit} size="sm" onIncrement={() => change(p, 1)} onDecrement={() => change(p, -1)} />}
+            {p.is_available && <QuantityStepper quantity={qty[p.slug] ?? 0} unit={p.unit} size="sm" onIncrement={() => change(p, 1)} onDecrement={() => change(p, -1)} onSet={(q) => setQty((s) => ({ ...s, [p.slug]: q }))} />}
           </div>
         ))}
       </section>

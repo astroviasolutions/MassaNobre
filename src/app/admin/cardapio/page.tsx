@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Archive, Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatBRL } from "@/lib/format";
 
@@ -103,8 +103,8 @@ export default function ProdutosPage() {
                       className={`relative h-7 w-12 rounded-full transition ${r.is_available ? "bg-green-600" : "bg-wood-300"}`}>
                       <span className={`absolute top-1 size-5 rounded-full bg-white transition-all ${r.is_available ? "left-6" : "left-1"}`} />
                     </button>
-                    <button title="Remover do cardápio" onClick={() => confirm(`Remover "${r.name}" do cardápio?`) && update(r, { is_archived: true })} className="text-wood-300 hover:text-red-600">
-                      <Archive className="size-4" />
+                    <button title="Excluir produto" onClick={() => confirm(`Excluir "${r.name}" do cardápio? (o histórico de vendas é mantido)`) && update(r, { is_archived: true })} className="text-wood-300 hover:text-red-600">
+                      <Trash2 className="size-4" />
                     </button>
                   </div>
                 </td>

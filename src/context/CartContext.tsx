@@ -47,6 +47,7 @@ interface CartContextValue {
   add: (p: Product) => void;
   increment: (p: Product) => void;
   decrement: (p: Product) => void;
+  setQty: (p: Product, qty: number) => void;
   remove: (id: string) => void;
   clear: () => void;
   isOpen: boolean;
@@ -120,6 +121,7 @@ export function CartProvider({ children, products = PRODUCTS }: { children: Reac
     add: increment,
     increment,
     decrement,
+    setQty: (p, qty) => dispatch({ type: "set", id: p.id, qty }),
     remove: (id) => dispatch({ type: "remove", id }),
     clear: () => dispatch({ type: "clear" }),
     isOpen,

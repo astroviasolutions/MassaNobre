@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatBRL } from "@/lib/format";
 
@@ -48,6 +48,18 @@ export default function EstoquePage() {
     load();
   }
 
+  async function removeItem(i: Item) {
+    if (!confirm(`Excluir o insumo "${i.name}" e seu histórico?`)) return;
+    await supabase!.from("stock_items").delete().eq("id", i.id);
+    load();
+  }
+
+  async function removeMov(m: Mov) {
+    if (!confirm("Excluir esta movimentação? O saldo do insumo será corrigido.")) return;
+    await supabase!.from("stock_movements").delete().eq("id", m.id);
+    load();
+  }
+
   const total = items.reduce((s, i) => s + Number(i.quantity) * Number(i.cost_per_unit), 0);
 
   return (
@@ -82,6 +94,7 @@ export default function EstoquePage() {
                   <td className="px-5 py-2 text-right">
                     <button onClick={() => setMove({ item: i, kind: "entrada" })} className="mr-1 rounded bg-green-600 p-1.5 text-white" title="Entrada"><Plus className="size-4" /></button>
                     <button onClick={() => setMove({ item: i, kind: "saida" })} className="rounded bg-wood-700 p-1.5 text-white" title="Saída"><Minus className="size-4" /></button>
+                    <button onClick={() => removeItem(i)} className="ml-2 p-1.5 text-wood-300 hover:text-red-600" title="Excluir"><Trash2 className="size-4" /></button>
                   </td>
                 </tr>
               );
@@ -112,7 +125,10 @@ export default function EstoquePage() {
         {movs.map((m) => (
           <p key={m.id} className="flex justify-between border-b border-cream-200 py-1.5 text-sm last:border-0">
             <span>{m.kind === "entrada" ? "➕" : "➖"} {Number(m.quantity).toLocaleString("pt-BR")} {m.stock_items?.unit} · {m.stock_items?.name}</span>
-            <span className="text-wood-500">{new Date(m.created_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</span>
+            <span className="text-wood-500">
+              {new Date(m.created_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}
+              <button onClick={() => removeMov(m)} className="ml-3 align-middle text-wood-300 hover:text-red-600" title="Excluir"><Trash2 className="inline size-3.5" /></button>
+            </span>
           </p>
         ))}
         {!movs.length && <p className="text-sm text-wood-500">Sem movimentações</p>}

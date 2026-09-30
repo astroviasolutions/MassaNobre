@@ -53,6 +53,7 @@ export default function ComandaPage({ params }: { params: Promise<{ id: string }
       ))}
       {hr}
       {o.fulfillment === "entrega" && <p className="flex justify-between"><span>Entrega</span><span>{o.delivery_fee === null ? "a combinar" : formatBRL(Number(o.delivery_fee))}</span></p>}
+      {Number(o.discount) > 0 && <p className="flex justify-between"><span>Desconto {o.coupon_code}</span><span>-{formatBRL(Number(o.discount))}</span></p>}
       <p className="flex justify-between text-[14px] font-bold"><span>TOTAL</span><span>{formatBRL(Number(o.total))}</span></p>
       <p>{PAYMENT_LABELS[o.payment_method]}{o.change_for ? ` · troco p/ ${formatBRL(Number(o.change_for))}` : ""}</p>
       {o.notes && (<>{hr}<p className="font-bold">OBS: {o.notes}</p></>)}

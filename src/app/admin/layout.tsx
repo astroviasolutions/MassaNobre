@@ -12,6 +12,7 @@ const TABS = [
   { href: "/admin/cardapio", label: "Produtos" },
   { href: "/admin/estoque", label: "Estoque" },
   { href: "/admin/despesas", label: "Despesas" },
+  { href: "/admin/cupons", label: "Cupons e promoções" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

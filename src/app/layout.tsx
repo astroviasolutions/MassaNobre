@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cinzel, Cormorant_Garamond, Montserrat } from "next/font/google";
+import { Fraunces, Cormorant_Garamond, Montserrat } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -9,7 +9,7 @@ import "./globals.css";
 
 export const revalidate = 30;
 
-const cinzel = Cinzel({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-cinzel" });
+const cinzel = Fraunces({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-cinzel" });
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600"], style: ["normal", "italic"], variable: "--font-cormorant" });
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-montserrat" });
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2a1d14",
+  themeColor: "#f6f1e6",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

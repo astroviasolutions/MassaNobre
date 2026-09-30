@@ -7,7 +7,7 @@ import { formatBRL } from "@/lib/format";
 import { QuantityStepper } from "./QuantityStepper";
 
 export function ProductCard({ product }: { product: Product }) {
-  const { quantityOf, add, increment, decrement, hydrated } = useCart();
+  const { quantityOf, add, increment, decrement, setQty, hydrated } = useCart();
   const qty = hydrated ? quantityOf(product.id) : 0;
   const soldOut = !product.available;
 
@@ -40,6 +40,7 @@ export function ProductCard({ product }: { product: Product }) {
             unit={product.unit}
             onIncrement={() => increment(product)}
             onDecrement={() => decrement(product)}
+            onSet={(q) => setQty(product, q)}
             size="sm"
           />
         ) : (

@@ -2,24 +2,27 @@
 
 /* Paleta extraída do logótipo: dourado envelhecido, madeira escura e creme. */
 @theme inline {
-  --color-wood-950: #1c130d;
-  --color-wood-900: #2a1d14;
-  --color-wood-800: #3b2a1e;
-  --color-wood-700: #5a4030;
-  --color-wood-500: #8a6a50;
-  --color-wood-300: #bfa68d;
+  --color-wood-950: #2e1d12;
+  --color-wood-900: #4a2e1b;
+  --color-wood-800: #5c3a22;
+  --color-wood-700: #6f4a2e;
+  --color-wood-500: #9a7657;
+  --color-wood-300: #c9b39b;
 
-  --color-gold-200: #f1e2b8;
-  --color-gold-300: #e6cf95;
-  --color-gold-400: #d4b36e;
-  --color-gold-500: #b8924f;
-  --color-gold-600: #967334;
-  --color-gold-700: #6f5424;
+  --color-gold-200: #f5e7cc;
+  --color-gold-300: #ebd3a6;
+  --color-gold-400: #ddb77f;
+  --color-gold-500: #c9975b;
+  --color-gold-600: #a8773f;
+  --color-gold-700: #7f5a2e;
 
-  --color-cream-50: #fcf9f3;
-  --color-cream-100: #f6eee0;
-  --color-cream-200: #ecdfc6;
-  --color-cream-300: #dfcca8;
+  --color-cream-50: #fdfbf6;
+  --color-cream-100: #f6f1e6;
+  --color-cream-200: #ebe3d3;
+  --color-cream-300: #ddd0b8;
+  --color-sage-200: #dfe6d8;
+  --color-sage-400: #a9b99c;
+  --color-sage-600: #6f8563;
 
   --font-serif: var(--font-cinzel), "Times New Roman", serif;
   --font-display: var(--font-cormorant), Georgia, serif;
@@ -42,7 +45,7 @@ body {
 
 @layer components {
   .text-gold-foil {
-    background: linear-gradient(180deg, var(--color-gold-200) 0%, var(--color-gold-400) 45%, var(--color-gold-600) 100%);
+    background: linear-gradient(180deg, var(--color-gold-600) 0%, var(--color-wood-800) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

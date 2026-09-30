@@ -41,6 +41,8 @@ export interface DbOrder {
   change_for: number | null;
   notes: string | null;
   subtotal: number;
+  discount: number;
+  coupon_code: string | null;
   total: number;
   created_at: string;
   order_items: DbOrderItem[];

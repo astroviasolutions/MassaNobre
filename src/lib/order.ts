@@ -38,12 +38,14 @@ export interface OrderDraft {
   changeFor?: number;
   notes: string;
   lines: OrderLine[];
+  discount?: number;
+  couponLabel?: string;
 }
 
 export const lineTotal = (l: OrderLine) => l.product.price * l.quantity;
 export const subtotalOf = (lines: OrderLine[]) => lines.reduce((s, l) => s + lineTotal(l), 0);
-export const totalOf = (o: Pick<OrderDraft, "lines" | "deliveryFee" | "fulfillment">) =>
-  subtotalOf(o.lines) + (o.fulfillment === "entrega" ? o.deliveryFee ?? 0 : 0);
+export const totalOf = (o: Pick<OrderDraft, "lines" | "deliveryFee" | "fulfillment" | "discount">) =>
+  subtotalOf(o.lines) + (o.fulfillment === "entrega" ? o.deliveryFee ?? 0 : 0) - (o.discount ?? 0);
 
 /** Código curto para o cliente e a cozinha referirem o pedido (ex.: MN-4K7QZ). */
 export function generateOrderCode() {
@@ -72,6 +74,7 @@ export function buildWhatsAppMessage(o: OrderDraft): string {
       ? `Taxa de entrega (${bairro}): _a combinar_`
       : `Taxa de entrega (${bairro}): ${formatBRL(o.deliveryFee)}`);
   }
+  if (o.discount) L.push(`Desconto (${o.couponLabel}): -${formatBRL(o.discount)}`);
   L.push(`*Total: ${formatBRL(totalOf(o))}*${o.deliveryFee === null && o.fulfillment === "entrega" ? " + entrega" : ""}`, "");
 
   if (o.fulfillment === "entrega" && o.address) {

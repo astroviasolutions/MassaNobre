@@ -9,7 +9,7 @@ import { formatBRL, formatUnitPrice } from "@/lib/format";
 import { QuantityStepper } from "./QuantityStepper";
 
 export function CartDrawer() {
-  const { isOpen, close, lines, subtotal, increment, decrement, remove } = useCart();
+  const { isOpen, close, lines, subtotal, increment, decrement, setQty, remove } = useCart();
   const hasKg = lines.some((l) => l.product.unit === "kg");
 
   useEffect(() => {
@@ -37,9 +37,9 @@ export function CartDrawer() {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <header className="flex items-center justify-between border-b border-cream-200 bg-wood-900 px-6 py-5">
+        <header className="flex items-center justify-between border-b border-sage-200 bg-cream-100 px-6 py-5">
           <h2 className="text-gold-foil font-serif text-xl font-semibold">Seu pedido</h2>
-          <button type="button" onClick={close} className="rounded-full p-2 text-cream-200 transition hover:bg-white/10" aria-label="Fechar carrinho">
+          <button type="button" onClick={close} className="rounded-full p-2 text-wood-700 transition hover:bg-white" aria-label="Fechar carrinho">
             <X className="size-5" />
           </button>
         </header>
@@ -73,6 +73,7 @@ export function CartDrawer() {
                       unit={product.unit}
                       onIncrement={() => increment(product)}
                       onDecrement={() => decrement(product)}
+                      onSet={(q) => setQty(product, q)}
                       size="sm"
                     />
                     <span className="font-semibold tabular-nums text-wood-900">{formatBRL(product.price * quantity)}</span>

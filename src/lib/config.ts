@@ -19,5 +19,5 @@ export const STORE = {
 
   // Empadões vendidos ao kg.
   kgStep: 0.5,
-  kgMin: 1,
+  kgMin: 0.5,
 } as const;

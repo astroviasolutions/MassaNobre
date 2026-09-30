@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Banknote, CheckCircle2, CreditCard, Loader2, MessageCircle, QrCode, Store, Truck } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -40,6 +40,9 @@ export function CheckoutForm() {
   const [needsChange, setNeedsChange] = useState(false);
   const [changeFor, setChangeFor] = useState("");
   const [notes, setNotes] = useState("");
+  const [couponInput, setCouponInput] = useState("");
+  const [couponApplied, setCouponApplied] = useState("");
+  const [promo, setPromo] = useState<{ code: string | null; description: string; discount: number } | null>(null);
 
   const [errors, setErrors] = useState<Errors>({});
   const [cepStatus, setCepStatus] = useState<"idle" | "loading" | "notfound">("idle");
@@ -52,7 +55,16 @@ export function CheckoutForm() {
   const isOtherZone = zoneId === OTHER_ZONE_ID;
   const deliveryFee: number | null = fulfillment === "retirada" ? 0 : isOtherZone ? null : zone?.fee ?? 0;
   const neighborhood = isOtherZone ? otherNeighborhood.trim() : zone?.name ?? "";
-  const total = subtotal + (deliveryFee ?? 0);
+  const discount = Number(promo?.discount ?? 0);
+  const total = subtotal + (deliveryFee ?? 0) - discount;
+
+  // Cupom digitado ou promoção automática (ex.: entrega grátis acima de X)
+  useEffect(() => {
+    if (!supabase || !subtotal) return setPromo(null);
+    supabase
+      .rpc("check_coupon", { p_code: couponApplied, p_subtotal: subtotal, p_fee: deliveryFee ?? 0 })
+      .then(({ data }) => setPromo(data ?? null));
+  }, [couponApplied, subtotal, deliveryFee]);
 
   async function handleCep(value: string) {
     const masked = maskCep(value);
@@ -126,6 +138,8 @@ export function CheckoutForm() {
       changeFor: payment === "dinheiro" && needsChange ? parseMoney(changeFor) : undefined,
       notes,
       lines,
+      discount,
+      couponLabel: promo ? promo.code ?? promo.description : undefined,
     };
 
     const url = whatsappUrl(buildWhatsAppMessage(order));
@@ -149,6 +163,7 @@ export function CheckoutForm() {
           payment,
           change_for: order.changeFor ?? null,
           notes,
+          coupon: couponApplied,
           items: lines.map((l) => ({ slug: l.product.id, qty: l.quantity })),
         },
       })
@@ -302,6 +317,12 @@ export function CheckoutForm() {
 
         {/* 4. Pagamento */}
         <Section n={4} title="Pagamento" subtitle="O pagamento é feito na entrega ou retirada (PIX pode ser antecipado).">
+          <div className="mb-5 flex gap-2">
+            <input className="field uppercase" placeholder="Cupom de desconto" value={couponInput} onChange={(e) => setCouponInput(e.target.value)} />
+            <button type="button" className="btn-ghost shrink-0" onClick={() => setCouponApplied(couponInput.trim())}>Aplicar</button>
+          </div>
+          {couponApplied && !promo?.code && <p className="-mt-3 mb-4 text-xs text-red-600">Cupom inválido ou não aplicável a este pedido.</p>}
+          {promo && <p className="-mt-3 mb-4 text-xs font-semibold text-sage-600">✓ {promo.description} (−{formatBRL(discount)})</p>}
           <div className="grid gap-3 sm:grid-cols-3" role="radiogroup" aria-label="Forma de pagamento">
             <ChoiceCard checked={payment === "pix"} onSelect={() => setPayment("pix")} icon={QrCode} title="PIX" />
             <ChoiceCard checked={payment === "cartao"} onSelect={() => setPayment("cartao")} icon={CreditCard} title="Cartão" hint="Débito ou crédito" />
@@ -344,6 +365,8 @@ export function CheckoutForm() {
         fulfillment={fulfillment}
         deliveryFee={deliveryFee}
         neighborhood={neighborhood}
+        discount={discount}
+        promoLabel={promo?.description}
         total={total}
       />
     </form>

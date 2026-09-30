@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Plus, Printer, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Printer, Trash2, X } from "lucide-react";
 import { STATUS_COLUMNS, supabase, type DbOrder, type OrderStatus } from "@/lib/supabase";
 import { formatBRL, formatQty } from "@/lib/format";
 import { PAYMENT_LABELS } from "@/lib/order";
@@ -43,6 +43,12 @@ export default function PedidosPage() {
     load();
   }
 
+  async function remove(o: DbOrder) {
+    if (!confirm(`EXCLUIR definitivamente o pedido #${o.code}? (some dos relatórios)`)) return;
+    setOrders((prev) => prev.filter((x) => x.id !== o.id));
+    await supabase!.from("orders").delete().eq("id", o.id);
+  }
+
   return (
     <>
     <div className="mb-4 flex justify-end"><Link href="/admin/pedidos/novo" className="btn-gold"><Plus className="size-4" /> Novo pedido</Link></div>
@@ -78,6 +84,7 @@ export default function PedidosPage() {
                   <div className="mt-3 flex items-center justify-between">
                     <span className="font-semibold">{formatBRL(Number(o.total))}</span>
                     <div className="flex gap-1">
+                      <button title="Excluir" onClick={() => remove(o)} className="rounded p-1.5 text-wood-300 hover:bg-red-50 hover:text-red-600"><Trash2 className="size-4" /></button>
                       <button title="Cancelar" onClick={() => setStatus(o, "cancelado")} className="rounded p-1.5 text-wood-300 hover:bg-red-50 hover:text-red-600"><X className="size-4" /></button>
                       <a title="Imprimir comanda" href={`/admin/comanda/${o.id}`} target="_blank" className="rounded p-1.5 hover:bg-cream-200"><Printer className="size-4" /></a>
                       {ci > 0 && <button title="Voltar" onClick={() => setStatus(o, STATUS_COLUMNS[ci - 1].id)} className="rounded p-1.5 hover:bg-cream-200"><ChevronLeft className="size-4" /></button>}
