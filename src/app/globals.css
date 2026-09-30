@@ -2,12 +2,12 @@
 
 /* Paleta extraída do logótipo: dourado envelhecido, madeira escura e creme. */
 @theme inline {
-  --color-wood-950: #2e1d12;
-  --color-wood-900: #4a2e1b;
-  --color-wood-800: #5c3a22;
-  --color-wood-700: #6f4a2e;
-  --color-wood-500: #9a7657;
-  --color-wood-300: #c9b39b;
+  --color-wood-950: #0a0a0a;
+  --color-wood-900: #111111;
+  --color-wood-800: #1c1c1c;
+  --color-wood-700: #2a2a2a;
+  --color-wood-500: #564c43;
+  --color-wood-300: #978a7c;
 
   --color-gold-200: #f5e7cc;
   --color-gold-300: #ebd3a6;
@@ -16,10 +16,10 @@
   --color-gold-600: #a8773f;
   --color-gold-700: #7f5a2e;
 
-  --color-cream-50: #fdfbf6;
-  --color-cream-100: #f6f1e6;
-  --color-cream-200: #ebe3d3;
-  --color-cream-300: #ddd0b8;
+  --color-cream-50: #ece3d3;
+  --color-cream-100: #e2d7c4;
+  --color-cream-200: #d3c6af;
+  --color-cream-300: #c3b398;
   --color-sage-200: #dfe6d8;
   --color-sage-400: #a9b99c;
   --color-sage-600: #6f8563;
@@ -45,7 +45,7 @@ body {
 
 @layer components {
   .text-gold-foil {
-    background: linear-gradient(180deg, var(--color-gold-600) 0%, var(--color-wood-800) 100%);
+    background: linear-gradient(180deg, #2a2a2a 0%, #000 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -63,7 +63,7 @@ body {
   }
 
   .field {
-    @apply w-full rounded-xl border border-cream-300 bg-white/80 px-4 py-3 text-[15px] text-wood-900 placeholder:text-wood-300 outline-none transition
+    @apply w-full rounded-xl border border-cream-300 bg-white px-4 py-3 text-[15px] text-wood-900 placeholder:text-wood-300 outline-none transition
       focus:border-gold-500 focus:ring-4 focus:ring-gold-300/30;
   }
 
@@ -76,7 +76,7 @@ body {
   }
 
   .card {
-    @apply rounded-2xl border border-cream-200 bg-white/70 shadow-[0_1px_0_rgb(255_255_255/0.8)_inset,0_10px_30px_-18px_rgb(42_29_20/0.35)] backdrop-blur-sm;
+    @apply rounded-2xl border border-white/60 bg-[#fbf8f2] shadow-[0_1px_0_rgb(255_255_255/0.9)_inset,0_18px_40px_-22px_rgb(0_0_0/0.45)];
   }
 }
 

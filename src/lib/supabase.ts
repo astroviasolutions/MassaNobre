@@ -21,6 +21,7 @@ export interface DbOrderItem {
   unit: "kg" | "un";
   quantity: number;
   line_total: number;
+  is_gift?: boolean;
 }
 
 export interface DbOrder {

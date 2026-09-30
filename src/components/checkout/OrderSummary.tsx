@@ -12,10 +12,11 @@ interface Props {
   neighborhood: string;
   discount?: number;
   promoLabel?: string;
+  gift?: string;
   total: number;
 }
 
-export function OrderSummary({ lines, subtotal, fulfillment, deliveryFee, neighborhood, discount = 0, promoLabel, total }: Props) {
+export function OrderSummary({ lines, subtotal, fulfillment, deliveryFee, neighborhood, discount = 0, promoLabel, gift, total }: Props) {
   const hasKg = lines.some((l) => l.product.unit === "kg");
 
   return (
@@ -63,6 +64,7 @@ export function OrderSummary({ lines, subtotal, fulfillment, deliveryFee, neighb
               <dd className="tabular-nums">−{formatBRL(discount)}</dd>
             </div>
           )}
+          {gift && <div className="flex justify-between font-semibold text-gold-700"><dt>🎁 Brinde</dt><dd>{gift}</dd></div>}
         </dl>
 
         <div className="mt-4 flex items-baseline justify-between border-t border-sage-200 bg-cream-50 px-6 py-4">

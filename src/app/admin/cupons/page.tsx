@@ -9,7 +9,9 @@ interface Coupon {
   id: string;
   code: string | null;
   description: string;
-  kind: "percent" | "fixed" | "free_delivery";
+  kind: "percent" | "fixed" | "free_delivery" | "gift";
+  gift_slug: string | null;
+  gift_qty: number;
   value: number;
   min_order: number;
   auto: boolean;
@@ -19,13 +21,17 @@ interface Coupon {
   uses: number;
 }
 
-const KINDS = { percent: "% de desconto", fixed: "R$ de desconto", free_delivery: "Entrega grátis" };
-const empty = { code: "", description: "", kind: "percent" as Coupon["kind"], value: "", min_order: "", expires_at: "", max_uses: "", auto: false };
+const KINDS = { percent: "% de desconto", fixed: "R$ de desconto", free_delivery: "Entrega grátis", gift: "Brinde grátis" };
+const empty = { code: "", description: "", kind: "percent" as Coupon["kind"], value: "", min_order: "", expires_at: "", max_uses: "", auto: false, gift_slug: "", gift_qty: "1" };
 
 export default function CuponsPage() {
   const [list, setList] = useState<Coupon[]>([]);
   const [n, setN] = useState(empty);
   const [err, setErr] = useState("");
+  const [prods, setProds] = useState<{ slug: string; name: string; category: string }[]>([]);
+  useEffect(() => {
+    supabase!.from("products").select("slug,name,category").eq("is_archived", false).order("category").then(({ data }) => setProds(data ?? []));
+  }, []);
 
   const load = () => {
     supabase!.from("coupons").select("*").order("created_at", { ascending: false }).then(({ data }) => setList((data as Coupon[]) ?? []));
@@ -35,6 +41,7 @@ export default function CuponsPage() {
   async function create() {
     setErr("");
     if (!n.description.trim()) return setErr("Dê um nome/descrição para a promoção.");
+    if (n.kind === "gift" && !n.gift_slug) return setErr("Escolha o produto do brinde.");
     if (!n.auto && !n.code.trim()) return setErr("Informe o código do cupom (ou marque como automática).");
     const { error } = await supabase!.from("coupons").insert({
       code: n.auto && !n.code.trim() ? null : n.code.trim().toUpperCase(),
@@ -45,6 +52,8 @@ export default function CuponsPage() {
       expires_at: n.expires_at || null,
       max_uses: n.max_uses ? Number(n.max_uses) : null,
       auto: n.auto,
+      gift_slug: n.kind === "gift" ? n.gift_slug : null,
+      gift_qty: Number(n.gift_qty || 1),
     });
     if (error) return setErr(error.message.includes("duplicate") ? "Já existe um cupom com esse código." : error.message);
     setN(empty);
@@ -63,7 +72,7 @@ export default function CuponsPage() {
   }
 
   const rule = (c: Coupon) =>
-    `${c.kind === "percent" ? `${Number(c.value)}% off` : c.kind === "fixed" ? `${formatBRL(Number(c.value))} off` : "Entrega grátis"}` +
+    `${c.kind === "percent" ? `${Number(c.value)}% off` : c.kind === "fixed" ? `${formatBRL(Number(c.value))} off` : c.kind === "gift" ? `Brinde: ${Number(c.gift_qty)}× ${prods.find((p) => p.slug === c.gift_slug)?.name ?? c.gift_slug}` : "Entrega grátis"}` +
     (Number(c.min_order) ? ` · pedidos a partir de ${formatBRL(Number(c.min_order))}` : "") +
     (c.expires_at ? ` · até ${c.expires_at.split("-").reverse().join("/")}` : "") +
     (c.max_uses ? ` · ${c.uses}/${c.max_uses} usos` : ` · ${c.uses} usos`);
@@ -77,7 +86,16 @@ export default function CuponsPage() {
         <select className="field" value={n.kind} onChange={(e) => setN({ ...n, kind: e.target.value as Coupon["kind"] })}>
           {Object.entries(KINDS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
-        {n.kind !== "free_delivery" && (
+        {n.kind === "gift" && (
+          <>
+            <select className="field" value={n.gift_slug} onChange={(e) => setN({ ...n, gift_slug: e.target.value })}>
+              <option value="">Produto do brinde…</option>
+              {prods.map((p) => <option key={p.slug} value={p.slug}>{p.category === "empadao" ? "Empadão" : "Empadinha"} {p.name}</option>)}
+            </select>
+            <input className="field" type="number" step="0.5" placeholder="Qtd. (un. ou kg)" value={n.gift_qty} onChange={(e) => setN({ ...n, gift_qty: e.target.value })} />
+          </>
+        )}
+        {(n.kind === "percent" || n.kind === "fixed") && (
           <input className="field" type="number" placeholder={n.kind === "percent" ? "Desconto (%)" : "Desconto (R$)"} value={n.value} onChange={(e) => setN({ ...n, value: e.target.value })} />
         )}
         <input className="field" type="number" placeholder="Pedido mínimo (R$)" value={n.min_order} onChange={(e) => setN({ ...n, min_order: e.target.value })} />

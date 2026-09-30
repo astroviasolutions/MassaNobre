@@ -40,6 +40,7 @@ export interface OrderDraft {
   lines: OrderLine[];
   discount?: number;
   couponLabel?: string;
+  gift?: string;
 }
 
 export const lineTotal = (l: OrderLine) => l.product.price * l.quantity;
@@ -75,6 +76,7 @@ export function buildWhatsAppMessage(o: OrderDraft): string {
       : `Taxa de entrega (${bairro}): ${formatBRL(o.deliveryFee)}`);
   }
   if (o.discount) L.push(`Desconto (${o.couponLabel}): -${formatBRL(o.discount)}`);
+  if (o.gift) L.push(`🎁 Brinde: ${o.gift}`);
   L.push(`*Total: ${formatBRL(totalOf(o))}*${o.deliveryFee === null && o.fulfillment === "entrega" ? " + entrega" : ""}`, "");
 
   if (o.fulfillment === "entrega" && o.address) {

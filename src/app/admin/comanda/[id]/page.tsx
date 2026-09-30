@@ -14,7 +14,7 @@ export default function ComandaPage({ params }: { params: Promise<{ id: string }
   useEffect(() => {
     supabase!
       .from("orders")
-      .select("*, order_items(product_name,category,unit,quantity,line_total)")
+      .select("*, order_items(product_name,category,unit,quantity,line_total,is_gift)")
       .eq("id", id)
       .single()
       .then(({ data }) => {
@@ -48,7 +48,7 @@ export default function ComandaPage({ params }: { params: Promise<{ id: string }
           <span>
             <b>{formatQty(Number(i.quantity), i.unit)}</b> {i.category === "empadao" ? "Empadão" : "Empadinha"} {i.product_name}
           </span>
-          <span>{formatBRL(Number(i.line_total))}</span>
+          <span>{i.is_gift ? "BRINDE" : formatBRL(Number(i.line_total))}</span>
         </div>
       ))}
       {hr}

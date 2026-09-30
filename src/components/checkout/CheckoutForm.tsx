@@ -42,7 +42,7 @@ export function CheckoutForm() {
   const [notes, setNotes] = useState("");
   const [couponInput, setCouponInput] = useState("");
   const [couponApplied, setCouponApplied] = useState("");
-  const [promo, setPromo] = useState<{ code: string | null; description: string; discount: number } | null>(null);
+  const [promo, setPromo] = useState<{ code: string | null; description: string; discount: number; kind: string; gift_name?: string; gift_qty?: number } | null>(null);
 
   const [errors, setErrors] = useState<Errors>({});
   const [cepStatus, setCepStatus] = useState<"idle" | "loading" | "notfound">("idle");
@@ -140,6 +140,7 @@ export function CheckoutForm() {
       lines,
       discount,
       couponLabel: promo ? promo.code ?? promo.description : undefined,
+      gift: promo?.kind === "gift" && promo.gift_name ? `${promo.gift_qty}× ${promo.gift_name}` : undefined,
     };
 
     const url = whatsappUrl(buildWhatsAppMessage(order));
@@ -322,7 +323,11 @@ export function CheckoutForm() {
             <button type="button" className="btn-ghost shrink-0" onClick={() => setCouponApplied(couponInput.trim())}>Aplicar</button>
           </div>
           {couponApplied && !promo?.code && <p className="-mt-3 mb-4 text-xs text-red-600">Cupom inválido ou não aplicável a este pedido.</p>}
-          {promo && <p className="-mt-3 mb-4 text-xs font-semibold text-sage-600">✓ {promo.description} (−{formatBRL(discount)})</p>}
+          {promo && (
+            <p className="-mt-3 mb-4 text-xs font-semibold text-sage-600">
+              ✓ {promo.description} {promo.kind === "gift" ? `— 🎁 ${promo.gift_qty}× ${promo.gift_name}` : `(−${formatBRL(discount)})`}
+            </p>
+          )}
           <div className="grid gap-3 sm:grid-cols-3" role="radiogroup" aria-label="Forma de pagamento">
             <ChoiceCard checked={payment === "pix"} onSelect={() => setPayment("pix")} icon={QrCode} title="PIX" />
             <ChoiceCard checked={payment === "cartao"} onSelect={() => setPayment("cartao")} icon={CreditCard} title="Cartão" hint="Débito ou crédito" />
@@ -367,6 +372,7 @@ export function CheckoutForm() {
         neighborhood={neighborhood}
         discount={discount}
         promoLabel={promo?.description}
+        gift={promo?.kind === "gift" ? `${promo.gift_qty}× ${promo.gift_name}` : undefined}
         total={total}
       />
     </form>

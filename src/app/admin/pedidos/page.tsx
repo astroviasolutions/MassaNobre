@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Plus, Printer, Trash2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil, Plus, Printer, Trash2, X } from "lucide-react";
 import { STATUS_COLUMNS, supabase, type DbOrder, type OrderStatus } from "@/lib/supabase";
 import { formatBRL, formatQty } from "@/lib/format";
 import { PAYMENT_LABELS } from "@/lib/order";
@@ -17,7 +17,7 @@ export default function PedidosPage() {
     const since = new Date(Date.now() - 3 * 86400_000).toISOString();
     const { data } = await supabase!
       .from("orders")
-      .select("*, order_items(product_name,category,unit,quantity,line_total)")
+      .select("*, order_items(product_name,category,unit,quantity,line_total,is_gift)")
       .neq("status", "cancelado")
       .or(`status.neq.concluido,scheduled_for.gte.${since}`)
       .order("scheduled_for");
@@ -73,7 +73,7 @@ export default function PedidosPage() {
                   <ul className="my-2 text-xs text-wood-700">
                     {o.order_items.map((i, k) => (
                       <li key={k}>
-                        {formatQty(Number(i.quantity), i.unit)} · {i.category === "empadao" ? "Empadão" : "Empadinha"} {i.product_name}
+                        {i.is_gift && "🎁 "}{formatQty(Number(i.quantity), i.unit)} · {i.category === "empadao" ? "Empadão" : "Empadinha"} {i.product_name}{i.is_gift && " (brinde)"}
                       </li>
                     ))}
                   </ul>
@@ -86,6 +86,7 @@ export default function PedidosPage() {
                     <div className="flex gap-1">
                       <button title="Excluir" onClick={() => remove(o)} className="rounded p-1.5 text-wood-300 hover:bg-red-50 hover:text-red-600"><Trash2 className="size-4" /></button>
                       <button title="Cancelar" onClick={() => setStatus(o, "cancelado")} className="rounded p-1.5 text-wood-300 hover:bg-red-50 hover:text-red-600"><X className="size-4" /></button>
+                      <Link title="Editar pedido" href={`/admin/pedidos/${o.id}`} className="rounded p-1.5 hover:bg-cream-200"><Pencil className="size-4" /></Link>
                       <a title="Imprimir comanda" href={`/admin/comanda/${o.id}`} target="_blank" className="rounded p-1.5 hover:bg-cream-200"><Printer className="size-4" /></a>
                       {ci > 0 && <button title="Voltar" onClick={() => setStatus(o, STATUS_COLUMNS[ci - 1].id)} className="rounded p-1.5 hover:bg-cream-200"><ChevronLeft className="size-4" /></button>}
                       {ci < STATUS_COLUMNS.length - 1 && <button title="Avançar" onClick={() => setStatus(o, STATUS_COLUMNS[ci + 1].id)} className="rounded bg-wood-900 p-1.5 text-gold-200"><ChevronRight className="size-4" /></button>}
